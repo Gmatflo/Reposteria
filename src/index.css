@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Cormorant Garamond", "Georgia", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ivory: #f7f3ec;
+  --color-cream: #efe7da;
+  --color-latte: #e4d7c4;
+  --color-blush: #e9d9cc;
+  --color-caramel: #c08a4e;
+  --color-gold: #a86f32;
+  --color-espresso: #14110e;
+  --color-cocoa: #2b2620;
+  --color-mocha: #8a7f72;
+
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-spin-slow: spin 14s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-ivory text-cocoa font-sans antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+section[id] {
+  scroll-margin-top: 4.5rem;
+}
+
+::selection {
+  background: #c08a4e;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #efe7da;
+}
+::-webkit-scrollbar-thumb {
+  background: #c08a4e;
+  border-radius: 999px;
+  border: 2px solid #efe7da;
+}
+
+/* ---------- Loader (cuadrados girando) ---------- */
+@keyframes square-animation {
+  0% {
+    left: 0;
+    top: 0;
+  }
+  10.5% {
+    left: 0;
+    top: 0;
+  }
+  12.5% {
+    left: 32px;
+    top: 0;
+  }
+  23% {
+    left: 32px;
+    top: 0;
+  }
+  25% {
+    left: 64px;
+    top: 0;
+  }
+  35.5% {
+    left: 64px;
+    top: 0;
+  }
+  37.5% {
+    left: 64px;
+    top: 32px;
+  }
+  48% {
+    left: 64px;
+    top: 32px;
+  }
+  50% {
+    left: 32px;
+    top: 32px;
+  }
+  60.5% {
+    left: 32px;
+    top: 32px;
+  }
+  62.5% {
+    left: 32px;
+    top: 64px;
+  }
+  73% {
+    left: 32px;
+    top: 64px;
+  }
+  75% {
+    left: 0;
+    top: 64px;
+  }
+  85.5% {
+    left: 0;
+    top: 64px;
+  }
+  87.5% {
+    left: 0;
+    top: 32px;
+  }
+  98% {
+    left: 0;
+    top: 32px;
+  }
+  100% {
+    left: 0;
+    top: 0;
+  }
+}
+
+.loader {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  transform: rotate(45deg);
+}
+
+.loader-square {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  margin: 2px;
+  border-radius: 0;
+  background: #c08a4e;
+  animation: square-animation 10s ease-in-out infinite both;
+}
+
+.loader-square:nth-of-type(1) {
+  animation-delay: 0s;
+}
+.loader-square:nth-of-type(2) {
+  animation-delay: -1.25s;
+}
+.loader-square:nth-of-type(3) {
+  animation-delay: -2.5s;
+}
+.loader-square:nth-of-type(4) {
+  animation-delay: -3.75s;
+}
+.loader-square:nth-of-type(5) {
+  animation-delay: -5s;
+}
+.loader-square:nth-of-type(6) {
+  animation-delay: -6.25s;
+}
+.loader-square:nth-of-type(7) {
+  animation-delay: -7.5s;
+}
+.loader-square:nth-of-type(8) {
+  animation-delay: -8.75s;
+}
+
+/* ---------- Cursor del typewriter ---------- */
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.caret {
+  display: inline-block;
+  width: 3px;
+  height: 0.95em;
+  margin-left: 6px;
+  background: #c08a4e;
+  vertical-align: text-bottom;
+  animation: blink 0.9s steps(1) infinite;
+}
+
+/* ---------- Textura sutil ---------- */
+.noise::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 70;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Imágenes con tinte cálido (cohesión con el fondo) ---------- */
+.img-blend {
+  background-color: #efe7da;
+}
+
+.img-tint {
+  mix-blend-mode: multiply;
+  filter: sepia(0.18) saturate(0.85) contrast(1.02);
+}
