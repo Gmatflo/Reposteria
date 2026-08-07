@@ -18,6 +18,7 @@ import Chatbot from './components/Chatbot.jsx'
 import WhatsAppButton from './components/WhatsAppButton.jsx'
 import BackToTop from './components/BackToTop.jsx'
 import LegalModal from './components/LegalModal.jsx'
+import Analytics from './components/Analytics.jsx'
 
 function PaymentStatusToast() {
   const { push } = useToast()
@@ -86,6 +87,7 @@ function AppInner() {
         setOpen={(open) => setLegal((l) => ({ ...l, open }))}
         setTab={(tab) => setLegal((l) => ({ ...l, tab }))}
       />
+      <Analytics />
       <PaymentStatusToast />
     </div>
   )

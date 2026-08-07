@@ -2,56 +2,23 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { MessageCircle, Send, X } from 'lucide-react'
 import Logo from './Logo.jsx'
-import { waLink } from '../config.js'
-import { products } from '../data/products.js'
+import { waLink, CONTACT } from '../config.js'
+import { getBotReply, quickTopics } from '../shared/botBrain.js'
 
 const EASE = [0.16, 1, 0.3, 1]
 
-const quickReplies = ['Precios 🍰', 'Horarios ⏰', 'Envíos 🛵', 'Hacer un pedido 📝', 'Ubicación 📍']
-
-const priceLine = products
-  .slice(0, 4)
-  .map((p) => `• ${p.name}: $${p.price}`)
-  .join('\n')
-
-function getReply(raw) {
-  const t = raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  if (/hola|buen(a|o|as|os)|hey|hi |hello|que tal|saludos|que onda/.test(t))
-    return '¡Hola! 🍰 Soy el bot de *Delicias de Azúcar*. ¿En qué te ayudo? Podés preguntarme por precios, horarios, envíos o pedidos.'
-  if (/precio|cuanto|costo|tarifa|cu[aá]nto vale|menu|men[uú]/.test(t))
-    return `Estos son algunos precios de referencia:\n${priceLine}\n\nPodés ver el menú completo en la sección "Menú" o agregar al carrito. 🛒`
-  if (/horario|abre|cierra|atend|cuando funcion/.test(t))
-    return 'Atendemos de *Lun a Sáb de 9 a 20 h* y Domingos de 10 a 18 h. 🕘'
-  if (/env[ií]o|delivery|entrega|domicilio|reparto/.test(t))
-    return 'Hacemos envíos el mismo día en la zona 📦. El envío es *gratis en pedidos de +$50*. Fuera de la zona, consultanos por WhatsApp.'
-  if (/vegan|vegano|gluten|tacc|vegetarian|sin lactosa/.test(t))
-    return '¡Sí! Tenemos opciones *sin TACC* y *veganas* en tortas y macarons. Contanos tu pedido y lo preparamos. 🌱'
-  if (/macaron/.test(t))
-    return 'Nuestros macarons son 100% artesanales: vainilla, chocolate, pistacho y frutos rojos. Caja de 6 por *$18*. 😋'
-  if (/torta|cumple|pastel|cake|mesa dulce/.test(t))
-    return '¡Nos encanta hacer tortas de cumpleaños y mesas dulces! 🎂 Se encargan con *72 hs de antelación*. Completá el formulario de pedidos o escribinos por WhatsApp.'
-  if (/pago|pagas|mercado|efectivo|tarjeta|transferencia/.test(t))
-    return 'Aceptamos *efectivo, transferencia y Mercado Pago*. 💳 Coordinamos el pago por WhatsApp.'
-  if (/pedir|pedido|orden|comprar|carrito|encargar|reservar/.test(t))
-    return 'Es súper fácil: agregá productos al *carrito* 🛒 y al finalizar elegí "Pedir por WhatsApp". También tenés un formulario de pedidos personalizados en la sección "Pedidos". 📝'
-  if (/ubicaci|direcci|donde estan|local|hasta donde/.test(t))
-    return 'Nos encontrás en *Av. Corrientes 1234, Buenos Aires*. 🗺️'
-  if (/gracias|thank|genial|excelente|buenisimo|buen[ií]simo/.test(t))
-    return '¡A vos por escribirnos! 🧡 Si querés, te ayudo a hacer un pedido.'
-  if (/chau|adios|hasta luego|bye|nos vemos/.test(t))
-    return '¡Hasta pronto! 👋 Que tengas un día muy dulce.'
-  if (/persona|humano|whatsapp|atencion real|hablar con/.test(t))
-    return '¡Claro! Te dejo el WhatsApp para que te atienda una persona. 🧡'
-  return '¡Muy buena pregunta! 😅 Soy un bot nuevo y todavía aprendo. Probá preguntar por *precios*, *horarios*, *envíos* o *pedidos*. También podés escribirnos por WhatsApp.'
+const botContext = {
+  address: CONTACT.address,
+  hoursText: CONTACT.hours.replace(/[·]/g, '').replace(/\s+/g, ' ').trim(),
 }
 
 function renderText(text) {
   return text.split('\n').map((line, i) => (
     <span key={i} className="block">
-      {line.split(/(\*\*[^*]+\*\*)/g).map((seg, j) =>
-        seg.startsWith('**') ? (
+      {line.split(/(\*[^*]+\*)/g).map((seg, j) =>
+        seg.startsWith('*') && seg.endsWith('*') && seg.length > 1 ? (
           <strong key={j} className="font-semibold">
-            {seg.slice(2, -2)}
+            {seg.slice(1, -1)}
           </strong>
         ) : (
           seg
@@ -83,7 +50,7 @@ export default function Chatbot() {
     const delay = 650 + Math.min(1400, text.length * 40)
     setTimeout(() => {
       const wantsHuman = /persona|humano|whatsapp|atencion real/.test(text)
-      setMessages((m) => [...m, { from: 'bot', text: getReply(text) }])
+      setMessages((m) => [...m, { from: 'bot', text: getBotReply(text, botContext) }])
       setTyping(false)
       if (wantsHuman) {
         setTimeout(() => {
@@ -167,7 +134,7 @@ export default function Chatbot() {
 
             <div className="border-t border-cocoa/10 px-4 pt-3">
               <div className="flex gap-2 overflow-x-auto pb-3 [scrollbar-width:none]">
-                {quickReplies.map((q) => (
+                {quickTopics.map((q) => (
                   <button
                     key={q}
                     onClick={() => send(q)}

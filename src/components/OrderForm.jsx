@@ -58,7 +58,7 @@ export default function OrderForm() {
           className="space-y-4 rounded-3xl bg-ivory p-7 shadow-xl sm:p-9"
         >
           <input required value={form.nombre} onChange={set('nombre')} placeholder="Tu nombre" className={input} />
-          <input required value={form.telefono} onChange={set('telefono')} placeholder="Tu WhatsApp (ej: 5491122334455)" className={input} />
+          <input required value={form.telefono} onChange={set('telefono')} placeholder="Tu WhatsApp (ej: 51936028001)" className={input} />
           <select value={form.tipo} onChange={set('tipo')} className={input}>
             {['Torta de cumpleaños', 'Cupcakes personalizados', 'Macarons', 'Mesa dulce', 'Box de postres', 'Otro'].map((t) => (
               <option key={t}>{t}</option>
